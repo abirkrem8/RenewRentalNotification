@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 var env = "development";
 var configuration = new ConfigurationBuilder()
+ .SetBasePath(Directory.GetCurrentDirectory() + "/conf/")
  .AddJsonFile($"appsettings.json")
  .AddJsonFile($"appsettings.{env}.json").Build();
 
