@@ -22,7 +22,7 @@ namespace RenewRentalNotification
 
         public int Run()
         {
-
+            // First comb through the DB and look at the records to see 
             throw new NotImplementedException();
         }
     }

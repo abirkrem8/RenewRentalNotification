@@ -11,13 +11,12 @@ namespace RenewRentalNotification.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("RentalPropertyId")]
         public RentalProperty RentalProperty { get; set; }
         public DateTime DateOfMoveIn { get; set; }
         public DateTime ExpectedMoveOutDate { get; set; }
-        public byte[] LeaseDocument { get; set; } = new byte[0];
     }
 }

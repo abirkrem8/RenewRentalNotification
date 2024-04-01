@@ -12,5 +12,6 @@ namespace RenewRentalNotification.Models
         [Key]
         public Guid Id { get; set; }
         public DateTime CreationTimestamp { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

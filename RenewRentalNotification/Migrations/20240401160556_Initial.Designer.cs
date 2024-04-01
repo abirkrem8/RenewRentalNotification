@@ -11,7 +11,7 @@ using RenewRentalNotification.Logic;
 namespace RenewRentalNotification.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240401153602_Initial")]
+    [Migration("20240401160556_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -45,9 +45,6 @@ namespace RenewRentalNotification.Migrations
 
                     b.Property<DateTime>("DateListed")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("State")
                         .IsRequired()

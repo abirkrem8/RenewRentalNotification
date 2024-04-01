@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RenewRentalNotification.Logic;
 
@@ -10,9 +11,11 @@ using RenewRentalNotification.Logic;
 namespace RenewRentalNotification.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240401164407_ReformatPhoneNumber")]
+    partial class ReformatPhoneNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,6 @@ namespace RenewRentalNotification.Migrations
             modelBuilder.Entity("RenewRentalNotification.Models.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTimestamp")
@@ -93,12 +95,7 @@ namespace RenewRentalNotification.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("RentalPropertyId")
-                        .HasColumnType("char(36)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RentalPropertyId");
 
                     b.ToTable("Tenants");
                 });
@@ -107,7 +104,7 @@ namespace RenewRentalNotification.Migrations
                 {
                     b.HasOne("RenewRentalNotification.Models.RentalProperty", "RentalProperty")
                         .WithMany()
-                        .HasForeignKey("RentalPropertyId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
