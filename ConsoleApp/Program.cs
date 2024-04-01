@@ -5,32 +5,34 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using RenewRentalNotification.Logic;
+using RenewRentalNotification;
 
 
 // Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 
 
 var env = "development";
 var configuration = new ConfigurationBuilder()
- .SetBasePath(Directory.GetCurrentDirectory() + "/conf/")
+  .SetBasePath(Directory.GetCurrentDirectory() + "/conf/")
  .AddJsonFile($"appsettings.json")
  .AddJsonFile($"appsettings.{env}.json").Build();
 
-var projectId = configuration.GetValue<string>("FirebaseProjectId");
-var firebaseJson = File.ReadAllText(configuration.GetValue<string>("FirebaseCredentials"));
 
-
+var connectionString = configuration.GetConnectionString("DefaultConnection");
 IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
 {
-    
-    //services.AddSingleton<IAppointmentScheduleService, AppointmentScheduleService>();
+    services.AddDbContext<ApplicationDbContext>(options =>
+    {
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    });
+    services.AddSingleton<IRenewRentalNotificationService, RenewRentalNotificationService>();
     //services.AddTransient<AppointmentScheduleHandler>();
 
 }).Build();
 
 
+  var service = _host.Services.GetRequiredService<IRenewRentalNotificationService>();
+  int exitCode = service.Run();
 
-//var service = _host.Services.GetRequiredService<IAppointmentScheduleService>();
-//int exitCode = service.Run(3, true);
 
-
-//Environment.Exit(exitCode);
+  Environment.Exit(exitCode);
