@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RenewRentalNotification.Logic
+namespace RenewRentalNotification.Logic.Shared
 {
     public class ApplicationDbContext : DbContext
     {
@@ -16,6 +16,7 @@ namespace RenewRentalNotification.Logic
 
         // Your Entities
         public DbSet<RentalProperty> RentalProperties { get; set; }
-        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<RentalTenant> RentalTenants { get; set; }
+        public DbSet<TenantAssignment> TenantAssignments { get; set; }
     }
 }

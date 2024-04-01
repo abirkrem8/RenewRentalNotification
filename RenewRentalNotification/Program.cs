@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using RenewRentalNotification.Logic;
 using RenewRentalNotification;
+using RenewRentalNotification.Logic.Shared;
 
 
 // Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 

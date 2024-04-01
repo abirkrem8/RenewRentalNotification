@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RenewRentalNotification.Logic;
+using RenewRentalNotification.Logic.Shared;
 
 #nullable disable
 
@@ -59,7 +59,7 @@ namespace RenewRentalNotification.Migrations
                     b.ToTable("RentalProperties");
                 });
 
-            modelBuilder.Entity("RenewRentalNotification.Models.Tenant", b =>
+            modelBuilder.Entity("RenewRentalNotification.Models.RentalTenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,15 +68,9 @@ namespace RenewRentalNotification.Migrations
                     b.Property<DateTime>("CreationTimestamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("DateOfMoveIn")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("ExpectedMoveOutDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -93,17 +87,45 @@ namespace RenewRentalNotification.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("RentalTenants");
+                });
+
+            modelBuilder.Entity("RenewRentalNotification.Models.TenantAssignment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateOfMoveIn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ExpectedMoveOutDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid>("RentalPropertyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("RentalTenantId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RentalPropertyId");
 
-                    b.ToTable("Tenants");
+                    b.HasIndex("RentalTenantId");
+
+                    b.ToTable("TenantAssignments");
                 });
 
-            modelBuilder.Entity("RenewRentalNotification.Models.Tenant", b =>
+            modelBuilder.Entity("RenewRentalNotification.Models.TenantAssignment", b =>
                 {
                     b.HasOne("RenewRentalNotification.Models.RentalProperty", "RentalProperty")
                         .WithMany()
@@ -111,7 +133,15 @@ namespace RenewRentalNotification.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RenewRentalNotification.Models.RentalTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("RentalTenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("RentalProperty");
+
+                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }
