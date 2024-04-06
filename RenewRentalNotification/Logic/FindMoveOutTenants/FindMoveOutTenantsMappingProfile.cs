@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace RenewRentalNotification.Logic.FindMoveOutTenants
 {
-    public class MappingProfile : Profile
+    public class FindMoveOutTenantsMappingProfile : Profile
     {
-        public MappingProfile()
+        public FindMoveOutTenantsMappingProfile()
         {
             //CreateMap<Question, QuestionModel>();
             /*etc...*/

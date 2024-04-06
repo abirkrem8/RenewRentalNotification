@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
     public class SendEmailToTenantHandler
     {
         private ILogger<SendEmailToTenantHandler> _logger;
+        private IMemoryCache _memoryCache;
 
-        public SendEmailToTenantHandler(ILogger<SendEmailToTenantHandler> logger)
+        public SendEmailToTenantHandler(ILogger<SendEmailToTenantHandler> logger, IMemoryCache memoryCache)
         {
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         public SendEmailToTenantResult Handle(SendEmailToTenantItem sendEmailToTenantItem)
@@ -31,6 +34,9 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
                 return result;
             }
 
+
+            var fullStreetAddress = string.Format("{0} {1}", sendEmailToTenantItem.Address1, sendEmailToTenantItem.Address2);
+
             // Successful validation, do the handling
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
@@ -40,16 +46,31 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("email"),
-                Subject = "subject",
-                Body = File.ReadAllText("..\\..\\Resources\\EmailToTenant.html"),
+                From = new MailAddress(_memoryCache.Get<string>("ManagementEmailAddress")),
+                Subject = String.Format(_memoryCache.Get<string>("EmailToTenantSubject"), fullStreetAddress),
+                Body = BuildEmailBody(_memoryCache.Get<string>("EmailToTenantBody"), sendEmailToTenantItem),
                 IsBodyHtml = true,
             };
             mailMessage.To.Add(sendEmailToTenantItem.EmailAddress);
+            mailMessage.CC.Add(_memoryCache.Get<string>("CCEmailAddress"));
 
             smtpClient.Send(mailMessage);
 
             return result;
+        }
+
+        private string BuildEmailBody(string filePath, SendEmailToTenantItem sendEmailToTenantItem)
+        {
+            DateTime renewalDeadline = sendEmailToTenantItem.ExpectedMoveOutDate.AddMonths(-1);
+
+            _logger.LogInformation(Directory.GetCurrentDirectory());
+            string fileContents = File.ReadAllText(filePath);
+            string emailBody = String.Format(fileContents, sendEmailToTenantItem.FirstName,
+                sendEmailToTenantItem.LastName, sendEmailToTenantItem.Address1, sendEmailToTenantItem.Address2,
+                sendEmailToTenantItem.ExpectedMoveOutDate.ToShortDateString(), renewalDeadline.ToShortDateString());
+
+
+            return emailBody;
         }
     }
 }

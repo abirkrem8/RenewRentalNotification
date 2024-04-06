@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RenewRentalNotification;
 using RenewRentalNotification.Logic.Shared;
+using RenewRentalNotification.Logic.FindMoveOutTenants;
+using RenewRentalNotification.Logic.SendEmailToTenant;
+using AutoMapper;
 
 
 // Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 
@@ -17,6 +20,16 @@ var configuration = new ConfigurationBuilder()
  .AddJsonFile($"appsettings.json")
  .AddJsonFile($"appsettings.{env}.json").Build();
 
+// Auto Mapper Configurations
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+    mc.AddProfile(new FindMoveOutTenantsMappingProfile());
+    mc.AddProfile(new SendEmailToTenantMappingProfile());
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+
 
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
@@ -25,14 +38,23 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
     {
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
     });
+    services.AddMemoryCache();
+    services.AddSingleton(mapper);
+
     services.AddSingleton<IRenewRentalNotificationService, RenewRentalNotificationService>();
-    //services.AddTransient<AppointmentScheduleHandler>();
+    services.AddSingleton<ILoadMemoryCache, LoadMemoryCache>();
+    services.AddTransient<FindMoveOutTenantsHandler>();
+    services.AddTransient<SendEmailToTenantHandler>();
 
 }).Build();
 
+var loadMemoryCache = _host.Services.GetRequiredService<ILoadMemoryCache>();
+loadMemoryCache.Handle(configuration);
 
-  var service = _host.Services.GetRequiredService<IRenewRentalNotificationService>();
-  int exitCode = service.Run();
+
+var service = _host.Services.GetRequiredService<IRenewRentalNotificationService>();
+int exitCode = service.Run();
 
 
-  Environment.Exit(exitCode);
+Environment.Exit(exitCode);
+
