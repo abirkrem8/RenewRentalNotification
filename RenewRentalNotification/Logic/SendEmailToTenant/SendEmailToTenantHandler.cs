@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,8 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
             // Successful validation, do the handling
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
-                Port = 587,
+                Port = _memoryCache.Get<int>("SMTPPort"),
+                Credentials = new NetworkCredential(_memoryCache.Get<string>("SMTPEmailAddress"), _memoryCache.Get<string>("SMTPEmailPassword")),
                 EnableSsl = true,
             };
 
@@ -51,8 +53,8 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
                 Body = BuildEmailBody(_memoryCache.Get<string>("EmailToTenantBody"), sendEmailToTenantItem),
                 IsBodyHtml = true,
             };
-            mailMessage.To.Add(sendEmailToTenantItem.EmailAddress);
-            mailMessage.CC.Add(_memoryCache.Get<string>("CCEmailAddress"));
+            //mailMessage.To.Add(sendEmailToTenantItem.EmailAddress);
+            mailMessage.To.Add(_memoryCache.Get<string>("CCEmailAddress"));
 
             smtpClient.Send(mailMessage);
 

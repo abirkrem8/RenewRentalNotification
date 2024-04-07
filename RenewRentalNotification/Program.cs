@@ -10,6 +10,7 @@ using RenewRentalNotification.Logic.Shared;
 using RenewRentalNotification.Logic.FindMoveOutTenants;
 using RenewRentalNotification.Logic.SendEmailToTenant;
 using AutoMapper;
+using RenewRentalNotification.Logic.SendMoveOutListToManagement;
 
 
 // Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 
@@ -26,6 +27,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddProfile(new MappingProfile());
     mc.AddProfile(new FindMoveOutTenantsMappingProfile());
     mc.AddProfile(new SendEmailToTenantMappingProfile());
+    mc.AddProfile(new SendMoveOutListToManagementMappingProfile());
 });
 
 IMapper mapper = mapperConfig.CreateMapper();
@@ -45,6 +47,7 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
     services.AddSingleton<ILoadMemoryCache, LoadMemoryCache>();
     services.AddTransient<FindMoveOutTenantsHandler>();
     services.AddTransient<SendEmailToTenantHandler>();
+    services.AddTransient<SendMoveOutListToManagementHandler>();
 
 }).Build();
 

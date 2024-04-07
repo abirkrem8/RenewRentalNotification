@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using RenewRentalNotification.Logic.Shared;
 using System;
@@ -15,13 +16,15 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
         private ILogger<FindMoveOutTenantsHandler> _logger;
         private ApplicationDbContext _dbContext;
         private IMapper _mapper;
+        private IMemoryCache _memoryCache;
 
         public FindMoveOutTenantsHandler(ILogger<FindMoveOutTenantsHandler> logger, ApplicationDbContext dbContext,
-            IMapper mapper)
+            IMapper mapper, IMemoryCache memoryCache)
         {
             _logger = logger;
             _dbContext = dbContext;
             _mapper = mapper;
+            _memoryCache = memoryCache;
         }
 
         public FindMoveOutTenantsResult Handle(FindMoveOutTenantsItem FindMoveOutTenantsItem)
@@ -41,8 +44,8 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
 
             // Successful validation, do the handling
             // Use Dapper to search for tenant assignments meeting criteria
-            DateTime startSearchDate = DateTime.Now.AddMonths(2).Date;
-            DateTime endSearchDate = DateTime.Now.AddMonths(2).AddDays(7).Date;
+            DateTime startSearchDate = DateTime.Now.AddDays(_memoryCache.Get<int>("DaysToLookAhead")).Date;
+            DateTime endSearchDate = startSearchDate.AddDays(7);
             var filteredTenantAssignments = _dbContext.TenantAssignments.Where(t => startSearchDate <= t.ExpectedMoveOutDate.Date 
                                         && t.ExpectedMoveOutDate < endSearchDate)
                                         .Include(x => x.RentalProperty)

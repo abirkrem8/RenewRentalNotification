@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RenewRentalNotification.Logic.FindMoveOutTenants;
 using RenewRentalNotification.Logic.SendEmailToTenant;
+using RenewRentalNotification.Logic.SendMoveOutListToManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,17 @@ namespace RenewRentalNotification
         private ILogger<RenewRentalNotificationService> _logger;
         private FindMoveOutTenantsHandler _findMoveOutTenantsHandler;
         private SendEmailToTenantHandler _sendEmailToTenantHandler;
+        private SendMoveOutListToManagementHandler _sendMoveOutListToManagementHandler;
         private IMapper _mapper;
 
         public RenewRentalNotificationService(ILogger<RenewRentalNotificationService> logger, FindMoveOutTenantsHandler findMoveOutTenantsHandler,
-            IMapper mapper, SendEmailToTenantHandler sendEmailToTenantHandler)
+            IMapper mapper, SendEmailToTenantHandler sendEmailToTenantHandler, SendMoveOutListToManagementHandler sendMoveOutListToManagementHandler)
         {
             _logger = logger;
             _mapper = mapper;
             _findMoveOutTenantsHandler = findMoveOutTenantsHandler;
             _sendEmailToTenantHandler = sendEmailToTenantHandler;
+            _sendMoveOutListToManagementHandler = sendMoveOutListToManagementHandler;
         }
 
         public int Run()
@@ -42,13 +45,21 @@ namespace RenewRentalNotification
             }
 
             List<SendEmailToTenantItem> emailList = _mapper.Map<List<SendEmailToTenantItem>>(findTenantsResult.MoveOutTenantsResultItems);
-            foreach(var email in emailList)
+            foreach (var email in emailList)
             {
                 _sendEmailToTenantHandler.Handle(email);
             }
 
+            SendMoveOutListToManagementItem sendMoveOutListToManagementItem = new SendMoveOutListToManagementItem()
+            {
+                MoveOutList = _mapper.Map<List<SendMoveOutListToManagementListItem>>(findTenantsResult.MoveOutTenantsResultItems)
+            };
+            _sendMoveOutListToManagementHandler.Handle(sendMoveOutListToManagementItem);
 
-            throw new NotImplementedException();
+
+
+
+            return 0;
         }
     }
 }

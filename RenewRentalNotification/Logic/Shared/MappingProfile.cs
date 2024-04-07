@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using RenewRentalNotification.Logic.FindMoveOutTenants;
 using RenewRentalNotification.Logic.SendEmailToTenant;
+using RenewRentalNotification.Logic.SendMoveOutListToManagement;
 using RenewRentalNotification.Models;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,9 @@ namespace RenewRentalNotification.Logic.Shared
             /*etc...*/
 
             CreateMap<FindMoveOutTenantsResultItem, SendEmailToTenantItem>()
+                ;
+
+            CreateMap<FindMoveOutTenantsResultItem, SendMoveOutListToManagementListItem>()
                 ;
         }
 
