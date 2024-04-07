@@ -12,7 +12,7 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
     {
         public FindMoveOutTenantsValidator()
         {
-
+            RuleFor(x => x).NotNull();
         }
     }
 }

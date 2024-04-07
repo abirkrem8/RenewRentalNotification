@@ -42,12 +42,20 @@ namespace RenewRentalNotification
             if (findTenantsResult.FindMoveOutTenantsResultStatus != FindMoveOutTenantsResultStatus.Success)
             {
                 // handle error
+                _logger.LogError("Encountered an error while searching the MySQL database for move out tenants.");
+                return -1;
             }
 
             List<SendEmailToTenantItem> emailList = _mapper.Map<List<SendEmailToTenantItem>>(findTenantsResult.MoveOutTenantsResultItems);
             foreach (var email in emailList)
             {
-                _sendEmailToTenantHandler.Handle(email);
+                var sendEmailToTenantsResult = _sendEmailToTenantHandler.Handle(email);
+                if (sendEmailToTenantsResult.SendEmailToTenantResultStatus != SendEmailToTenantResultStatus.Success)
+                {
+                    // handle error
+                    _logger.LogError("Encountered an error while sending an email to tenant.");
+                    continue;
+                }
             }
 
             SendMoveOutListToManagementItem sendMoveOutListToManagementItem = new SendMoveOutListToManagementItem()

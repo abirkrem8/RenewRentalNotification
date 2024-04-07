@@ -41,6 +41,7 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
     public enum FindMoveOutTenantsResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 }

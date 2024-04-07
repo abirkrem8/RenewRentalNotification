@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using RenewRentalNotification.Logic.Shared;
+using RenewRentalNotification.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,12 +45,29 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
 
             // Successful validation, do the handling
             // Use Dapper to search for tenant assignments meeting criteria
+            _logger.LogInformation("Starting search for tenants with upcoming move out dates");
+
             DateTime startSearchDate = DateTime.Now.AddDays(_memoryCache.Get<int>("DaysToLookAhead")).Date;
             DateTime endSearchDate = startSearchDate.AddDays(7);
-            var filteredTenantAssignments = _dbContext.TenantAssignments.Where(t => startSearchDate <= t.ExpectedMoveOutDate.Date 
-                                        && t.ExpectedMoveOutDate < endSearchDate)
-                                        .Include(x => x.RentalProperty)
-                                        .Include(y=> y.Tenant).ToList();
+            _logger.LogInformation(string.Format("Date Search Range: {0} - {1}", startSearchDate.ToShortDateString(), endSearchDate.ToShortDateString()));
+
+            List<TenantAssignment> filteredTenantAssignments = new List<TenantAssignment>();
+            try
+            {
+                filteredTenantAssignments = _dbContext.TenantAssignments.Where(t => startSearchDate <= t.ExpectedMoveOutDate.Date
+                                            && t.ExpectedMoveOutDate < endSearchDate)
+                                            .Include(x => x.RentalProperty)
+                                            .Include(y => y.Tenant).ToList();
+            } catch (Exception ex)
+            {
+                _logger.LogError(String.Format("Exception occurred while pulling data from the TenantAssignments table. EX : {0}", ex.Message));
+                result.FindMoveOutTenantsResultErrors.Add(new Error { Message = ex.Message, StackTrace= ex.StackTrace});
+                result.FindMoveOutTenantsResultStatus = FindMoveOutTenantsResultStatus.DatabaseError;
+                return result;
+            }
+
+
+            _logger.LogInformation(string.Format("{0} Tenants found with upcoming move out dates!", filteredTenantAssignments.Count));
 
             // now that we have the tenants that will be moving out soon, let's put it in the result object
             result.MoveOutTenantsResultItems = _mapper.Map<List<FindMoveOutTenantsResultItem>>(filteredTenantAssignments);
