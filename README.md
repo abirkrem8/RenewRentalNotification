@@ -11,11 +11,11 @@ The Renew Rental Notification System is an automation designed to streamline the
    * Expected Move Out Date between 60 and 67 days (2 months from now)
 ### 2. Send Emails To Tenants
 * For each Tenant Assignment that fits that criteria, the automation will send an email to the tenant notifying them of the upcoming lease expiration. They will be directed to contact managment if they would like to renew their lease by a given deadline.
-![tenant_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/tenantemail.png?raw=true)
+![tenant_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/Tenantemail.png?raw=true)
 ### 3. Send Email to Management
 * Lastly, an email will be sent to management with an attached (.csv file) list of all of the tenants who have an upcoming lease expiration so they can follow up on renewing their lease.
-![management_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/managementemail.png?raw=true)
-![management_attachment](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/attachment.png?raw=true)
+![management_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/ManagementEmail.png?raw=true)
+![management_attachment](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/Attachment.png?raw=true)
 
 ## Key Features
 1. **MySQL Database Integration:** The system seamlessly integrates with the MySQL database housing all rental tenant information, allowing it to efficiently retrieve relevant data regarding upcoming move-outs.
