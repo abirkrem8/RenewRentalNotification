@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using RenewRentalNotification.Logic.Shared;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -39,34 +40,43 @@ namespace RenewRentalNotification.Logic.SendMoveOutListToManagement
             }
 
             // Successful validation, do the handling
-            var smtpClient = new SmtpClient("smtp.gmail.com")
+
+            try
             {
-                Port = _memoryCache.Get<int>("SMTPPort"),
-                Credentials = new NetworkCredential(_memoryCache.Get<string>("SMTPEmailAddress"), _memoryCache.Get<string>("SMTPEmailPassword")),
-                EnableSsl = true,
-            };
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = _memoryCache.Get<int>("SMTPPort"),
+                    Credentials = new NetworkCredential(_memoryCache.Get<string>("SMTPEmailAddress"), _memoryCache.Get<string>("SMTPEmailPassword")),
+                    EnableSsl = true,
+                };
 
 
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress(_memoryCache.Get<string>("ManagementEmailAddress")),
-                Subject = string.Format(_memoryCache.Get<string>("EmailToManagementSubject"), DateTime.Now.ToShortDateString()),
-                Body = BuildEmailBody(sendMoveOutListToManagementItem),
-                IsBodyHtml = true,
-            };
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_memoryCache.Get<string>("ManagementEmailAddress")),
+                    Subject = string.Format(_memoryCache.Get<string>("EmailToManagementSubject"), DateTime.Now.ToShortDateString()),
+                    Body = BuildEmailBody(sendMoveOutListToManagementItem),
+                    IsBodyHtml = true,
+                };
 
-            if (sendMoveOutListToManagementItem.MoveOutList.Any())
+                if (sendMoveOutListToManagementItem.MoveOutList.Any())
+                {
+                    string attachmentFileLocation = BuildAttachment(sendMoveOutListToManagementItem);
+                    Attachment attachment = new Attachment(attachmentFileLocation);
+                    mailMessage.Attachments.Add(attachment);
+                }
+
+                //mailMessage.To.Add(_memoryCache.Get<string>("ManagementEmailAddress"));
+                mailMessage.To.Add(_memoryCache.Get<string>("CCEmailAddress"));
+
+                smtpClient.Send(mailMessage);
+            } catch (Exception ex)
             {
-                string attachmentFileLocation = BuildAttachment(sendMoveOutListToManagementItem);
-                Attachment attachment = new Attachment(attachmentFileLocation);
-                mailMessage.Attachments.Add(attachment);
+                // ERROR WHILE BUILDING/SENDING EMAIL
+                _logger.LogError(String.Format("Exception occurred while attempting to send email to management. EX : {0}", ex.Message));
+                result.SendMoveOutListToManagementResultStatus = SendMoveOutListToManagementResultStatus.EmailError;
+                return result;
             }
-
-            //mailMessage.To.Add(_memoryCache.Get<string>("ManagementEmailAddress"));
-            mailMessage.To.Add(_memoryCache.Get<string>("CCEmailAddress"));
-
-            smtpClient.Send(mailMessage);
-
 
             return result;
         }

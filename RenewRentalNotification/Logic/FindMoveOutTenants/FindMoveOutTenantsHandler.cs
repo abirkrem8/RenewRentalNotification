@@ -39,6 +39,7 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
             {
                 // There was an error in validation, quit now
                 // log the error
+                _logger.LogError(String.Format("Error validating input object for Find Move Out Tenants Handler : {0}", validationResult.Errors[0]));
                 result.FindMoveOutTenantsResultStatus = FindMoveOutTenantsResultStatus.ValidationError;
                 return result;
             }
@@ -54,14 +55,15 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
             List<TenantAssignment> filteredTenantAssignments = new List<TenantAssignment>();
             try
             {
+                // Run DB query to find all tenant assignments moving out between stated dates
                 filteredTenantAssignments = _dbContext.TenantAssignments.Where(t => startSearchDate <= t.ExpectedMoveOutDate.Date
                                             && t.ExpectedMoveOutDate < endSearchDate)
                                             .Include(x => x.RentalProperty)
                                             .Include(y => y.Tenant).ToList();
             } catch (Exception ex)
             {
+                // ERROR WHILE RUNNING THE QUERY
                 _logger.LogError(String.Format("Exception occurred while pulling data from the TenantAssignments table. EX : {0}", ex.Message));
-                result.FindMoveOutTenantsResultErrors.Add(new Error { Message = ex.Message, StackTrace= ex.StackTrace});
                 result.FindMoveOutTenantsResultStatus = FindMoveOutTenantsResultStatus.DatabaseError;
                 return result;
             }

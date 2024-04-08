@@ -12,7 +12,8 @@ namespace RenewRentalNotification.Logic.SendMoveOutListToManagement
     {
         public SendMoveOutListToManagementValidator()
         {
-
+            RuleFor(x => x).NotNull().NotEmpty();
+            RuleFor(x => x.MoveOutList).NotNull().NotEmpty();
         }
     }
 }

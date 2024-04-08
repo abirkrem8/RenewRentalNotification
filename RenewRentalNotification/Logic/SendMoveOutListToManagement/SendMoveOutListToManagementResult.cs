@@ -10,7 +10,6 @@ namespace RenewRentalNotification.Logic.SendMoveOutListToManagement
     public class SendMoveOutListToManagementResult
     {
         public SendMoveOutListToManagementResultStatus SendMoveOutListToManagementResultStatus { get; set; }
-        public List<Error> SendMoveOutListToManagementResultErrors { get; set; }
 
 
     }
@@ -20,6 +19,7 @@ namespace RenewRentalNotification.Logic.SendMoveOutListToManagement
     public enum SendMoveOutListToManagementResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        EmailError
     }
 }

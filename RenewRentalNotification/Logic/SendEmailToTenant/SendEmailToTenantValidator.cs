@@ -12,7 +12,12 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
     {
         public SendEmailToTenantValidator()
         {
-
+            RuleFor(x => x).NotNull().NotEmpty();
+            RuleFor(x => x.FullAddress).NotNull().NotEmpty();
+            RuleFor(x => x.FirstName).NotNull().NotEmpty();
+            RuleFor(x => x.LastName).NotNull().NotEmpty();
+            RuleFor(x => x.EmailAddress).NotNull().NotEmpty();
+            RuleFor(x => x.ExpectedMoveOutDate).NotNull().NotEmpty();
         }
     }
 }

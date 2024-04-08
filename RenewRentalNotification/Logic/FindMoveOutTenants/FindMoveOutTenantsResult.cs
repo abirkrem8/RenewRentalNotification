@@ -11,8 +11,6 @@ namespace RenewRentalNotification.Logic.FindMoveOutTenants
     public class FindMoveOutTenantsResult
     {
         public FindMoveOutTenantsResultStatus FindMoveOutTenantsResultStatus { get; set; }
-        public List<Error> FindMoveOutTenantsResultErrors { get; set; }
-
         public List<FindMoveOutTenantsResultItem> MoveOutTenantsResultItems { get; set; } = new List<FindMoveOutTenantsResultItem>();
 
 

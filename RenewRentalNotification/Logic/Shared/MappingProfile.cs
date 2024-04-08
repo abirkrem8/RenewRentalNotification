@@ -19,6 +19,7 @@ namespace RenewRentalNotification.Logic.Shared
             /*etc...*/
 
             CreateMap<FindMoveOutTenantsResultItem, SendEmailToTenantItem>()
+                .ForMember(dst => dst.FullAddress, x => x.MapFrom(src => string.Concat(src.Address1," ",src.Address2, " ", src.City, ", ", src.State)))
                 ;
 
             CreateMap<FindMoveOutTenantsResultItem, SendMoveOutListToManagementListItem>()

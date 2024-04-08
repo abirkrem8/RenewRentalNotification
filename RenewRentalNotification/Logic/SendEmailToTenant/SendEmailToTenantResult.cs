@@ -10,7 +10,6 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
     public class SendEmailToTenantResult
     {
         public SendEmailToTenantResultStatus SendEmailToTenantResultStatus { get; set; }
-        public List<Error> SendEmailToTenantResultErrors { get; set; }
 
     }
 
@@ -19,6 +18,7 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
     public enum SendEmailToTenantResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        EmailError
     }
 }

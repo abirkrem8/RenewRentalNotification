@@ -46,6 +46,9 @@ namespace RenewRentalNotification
                 return -1;
             }
 
+
+            // Send an email to each tenant that's moving out soon
+            _logger.LogInformation("Sending emails to each tenant moving out soon");
             List<SendEmailToTenantItem> emailList = _mapper.Map<List<SendEmailToTenantItem>>(findTenantsResult.MoveOutTenantsResultItems);
             foreach (var email in emailList)
             {
@@ -58,15 +61,21 @@ namespace RenewRentalNotification
                 }
             }
 
+            // Sending an email to management with a list of all of the tenants who have been contacted
+            _logger.LogInformation("Sending email to management with a list of tenants moving out soon.");
             SendMoveOutListToManagementItem sendMoveOutListToManagementItem = new SendMoveOutListToManagementItem()
             {
                 MoveOutList = _mapper.Map<List<SendMoveOutListToManagementListItem>>(findTenantsResult.MoveOutTenantsResultItems)
             };
-            _sendMoveOutListToManagementHandler.Handle(sendMoveOutListToManagementItem);
+            var sendMoveOutListToManagementResult = _sendMoveOutListToManagementHandler.Handle(sendMoveOutListToManagementItem);
+            if (sendMoveOutListToManagementResult.SendMoveOutListToManagementResultStatus != SendMoveOutListToManagementResultStatus.Success)
+            {
+                // handle error
+                _logger.LogError("Encountered an error while sending email to management. All emails have gone out to tenants DO NOT RERUN.");
+                return -3;
+            }
 
-
-
-
+            _logger.LogInformation("COMPLETE, EXITING WITH CODE 0");
             return 0;
         }
     }

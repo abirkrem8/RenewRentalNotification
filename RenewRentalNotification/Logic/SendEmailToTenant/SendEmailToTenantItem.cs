@@ -10,16 +10,9 @@ namespace RenewRentalNotification.Logic.SendEmailToTenant
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
         public string EmailAddress { get; set; }
+        public string FullAddress { get; set; } = string.Empty;
 
-        public string Address1 { get; set; } = string.Empty;
-        public string Address2 { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string State { get; set; } = string.Empty;
-        public string ZipCode { get; set; } = string.Empty;
-
-        public DateTime DateOfMoveIn { get; set; }
         public DateTime ExpectedMoveOutDate { get; set; }
     }
 }
