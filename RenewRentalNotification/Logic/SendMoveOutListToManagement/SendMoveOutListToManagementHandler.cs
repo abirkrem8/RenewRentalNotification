@@ -97,7 +97,7 @@ namespace RenewRentalNotification.Logic.SendMoveOutListToManagement
         private string BuildAttachment(SendMoveOutListToManagementItem sendEmailToTenantItem)
         {
             string fileName = string.Format("RPM_MoveOutTenants_{0}.csv", DateTime.Now.ToString("yyyy_MM_dd"));
-            string fileLocation = Path.Combine(_memoryCache.Get<string>("AttachmentFile"), fileName);
+            string fileLocation = Path.Combine(_memoryCache.Get<string>("AttachmentFileOutputFolder"), fileName);
 
             using (var writer = new StreamWriter(fileLocation))
             using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))

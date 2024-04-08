@@ -13,8 +13,6 @@ using AutoMapper;
 using RenewRentalNotification.Logic.SendMoveOutListToManagement;
 
 
-// Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 
-
 var env = "development";
 var configuration = new ConfigurationBuilder()
   .SetBasePath(Directory.GetCurrentDirectory() + "/conf/")
@@ -43,11 +41,11 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
     services.AddMemoryCache();
     services.AddSingleton(mapper);
 
-    services.AddSingleton<IRenewRentalNotificationService, RenewRentalNotificationService>();
     services.AddSingleton<ILoadMemoryCache, LoadMemoryCache>();
     services.AddTransient<FindMoveOutTenantsHandler>();
     services.AddTransient<SendEmailToTenantHandler>();
     services.AddTransient<SendMoveOutListToManagementHandler>();
+    services.AddSingleton<IRenewRentalNotificationService, RenewRentalNotificationService>();
 
 }).Build();
 
