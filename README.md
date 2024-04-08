@@ -11,7 +11,7 @@ The Renew Rental Notification System is an automation designed to streamline the
    * Expected Move Out Date between 60 and 67 days (2 months from now)
 ### 2. Send Emails To Tenants
 * For each Tenant Assignment that fits that criteria, the automation will send an email to the tenant notifying them of the upcoming lease expiration. They will be directed to contact managment if they would like to renew their lease by a given deadline.
-![tenant_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/Tenantemail.png?raw=true)
+![tenant_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/TenantEmail.png?raw=true)
 ### 3. Send Email to Management
 * Lastly, an email will be sent to management with an attached (.csv file) list of all of the tenants who have an upcoming lease expiration so they can follow up on renewing their lease.
 ![management_email](https://github.com/abirkrem8/RenewRentalNotification/blob/master/Images/ManagementEmail.png?raw=true)
@@ -23,7 +23,7 @@ The Renew Rental Notification System is an automation designed to streamline the
 3. **Data Processing:** Utilizing advanced querying techniques, the automation identifies all tenants scheduled to move out in two months. This includes parsing through lease agreements and move-out dates to accurately pinpoint the relevant individuals.
 4. **Email Notification:** Once the target tenants are identified, the system automatically generates personalized email notifications. These emails contain essential information such as the confirmed move-out date and a polite reminder to consider renewing their lease. Personalization ensures that each tenant receives a tailored message, enhancing engagement and encouraging positive action.
 5. **Property Manager Notification:** Simultaneously, the automation compiles a detailed list of the identified tenants along with pertinent details. This list is promptly forwarded to the property manager, enabling them to oversee the process and take necessary follow-up actions.
-6. **Scheduling and Monitoring:** The automation can be scheduled to run at regular intervals, ensuring that upcoming move-outs are promptly identified and managed. Additionally, comprehensive logging and monitoring functionalities are integrated to track the execution of tasks and identify any potential issues.
+6. **Scheduling and Monitoring:** The automation can be scheduled to run at regular intervals, ensuring that upcoming move-outs are promptly identified and managed. Additionally, comprehensive logging and monitoring functionalities are integrated to track the execution of tasks and identify any potential issues. The current implementation would work best with a weekly recurring schedule.
 
 ## Benefits
 1. **Efficiency:** By automating the process of identifying and notifying tenants, the system significantly reduces the time and effort required for manual data processing and communication.
