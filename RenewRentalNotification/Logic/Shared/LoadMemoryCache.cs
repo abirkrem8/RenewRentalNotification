@@ -40,7 +40,7 @@ namespace RenewRentalNotification.Logic.Shared
             _memoryCache.Set("EmailToManagementBodyNoMoveOuts", _config.GetValue<string>("EmailToManagementBodyNoMoveOuts"));
             _memoryCache.Set("EmailToManagementSubject", _config.GetValue<string>("EmailToManagementSubject"));
 
-            _memoryCache.Set("AttachmentFile", _config.GetValue<string>("AttachmentFile"));
+            _memoryCache.Set("AttachmentFileOutputFolder", _config.GetValue<string>("AttachmentFileOutputFolder"));
         }
     }
 }
